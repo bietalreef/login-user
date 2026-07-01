@@ -1,43 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#1F3D2B" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>بوابة مزودي بيت الريف</title>
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0" />
-      <meta name="mobile-web-app-capable" content="yes" />
-      <meta name="apple-mobile-web-app-capable" content="yes" />
-      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-      <meta name="theme-color" content="#09101E" />
-      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-      <meta http-equiv="Pragma" content="no-cache" />
-      <meta http-equiv="Expires" content="0" />
-      <title>app biet alreef</title>
-      <script>
-        // Auto-reload on stale chunk error (after new deployment)
-        window.addEventListener('error', function(e) {
-          if (e && e.message && (e.message.includes('Failed to fetch dynamically imported module') || e.message.includes('error loading dynamically imported module'))) {
-            var key = 'chunkReload_' + Date.now();
-            if (!sessionStorage.getItem('chunkReloaded')) {
-              sessionStorage.setItem('chunkReloaded', '1');
-              window.location.reload(true);
-            }
-          }
-        });
-        window.addEventListener('unhandledrejection', function(e) {
-          if (e && e.reason && e.reason.message && (e.reason.message.includes('Failed to fetch dynamically imported module') || e.reason.message.includes('error loading dynamically imported module'))) {
-            if (!sessionStorage.getItem('chunkReloaded')) {
-              sessionStorage.setItem('chunkReloaded', '1');
-              window.location.reload(true);
-            }
-          }
-        });
-      </script>
-      <script type="module" crossorigin src="/assets/index-D0J_GShI.js"></script>
-      <link rel="stylesheet" crossorigin href="/assets/index-BblAqFSv.css">
-    </head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE43NTM183"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SE43NTM183');
+    </script>
 
-    <body>
-      <div id="root"></div>
-    </body>
-  </html>
-  
+    <script>
+      // Force unregister old service workers on every page load
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          regs.forEach(function(r) { r.unregister(); });
+        });
+        caches.keys().then(function(keys) {
+          keys.forEach(function(k) { caches.delete(k); });
+        });
+      }
+      // Auto-reload on stale chunk error (after new deployment)
+      window.addEventListener('error', function(e) {
+        if (e && e.message && (e.message.includes('Failed to fetch dynamically imported module') || e.message.includes('error loading dynamically imported module'))) {
+          if (!sessionStorage.getItem('chunkReloaded')) {
+            sessionStorage.setItem('chunkReloaded', '1');
+            window.location.reload(true);
+          }
+        }
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        if (e && e.reason && e.reason.message && (e.reason.message.includes('Failed to fetch dynamically imported module') || e.reason.message.includes('error loading dynamically imported module'))) {
+          if (!sessionStorage.getItem('chunkReloaded')) {
+            sessionStorage.setItem('chunkReloaded', '1');
+            window.location.reload(true);
+          }
+        }
+      });
+    </script>
+    <script type="module" crossorigin src="/assets/index-C7ypZjRN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C8uIDxEz.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script>
+      // تسجيل Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function(err) {
+            console.log('Service Worker registration failed:', err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -24,6 +24,7 @@ import { IntegrationProvider } from '../../contexts/IntegrationContext';
 import { PreviewProvider } from '../../contexts/PreviewContext';
 import { useWeyaakIdentity, type WeyaakRole } from '../../contexts/WeyaakIdentityContext';
 import { supabase } from '../../utils/supabase/client';
+import InstallProviderAppPrompt from '../InstallProviderAppPrompt';
 
 import {
   X, Wrench, ShoppingCart, Hammer, MapPin, MessageSquare,
@@ -267,6 +268,9 @@ export function BrowserLayout() {
           <Outlet />
         )}
       </main>
+
+      {/* PWA Install Prompt */}
+      <InstallProviderAppPrompt />
 
       {/* Smart Search — Global Overlay */}
       {isSearchOpen && (
