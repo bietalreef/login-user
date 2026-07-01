@@ -1,0 +1,201 @@
+# ════════════════════════════════════════════════════════════
+# robots.txt — بيت الريف | Beit Al Reef
+# منصة البناء والتشطيب الذكية في الإمارات
+# https://app.bietalreef.ae
+# آخر تحديث: 2026-03-26
+# ════════════════════════════════════════════════════════════
+
+# ── قاعدة عامة لجميع الزواحف ──
+User-agent: *
+
+# ✅ الصفحات العامة — مسموح بزحفها وفهرستها
+Allow: /$
+Allow: /seo/
+Allow: /seo/platform
+Allow: /seo/marketplace
+Allow: /seo/store
+Allow: /seo/dashboards
+Allow: /seo/tools
+Allow: /map/
+Allow: /map/*
+Allow: /contractors-in-uae
+Allow: /interior-design-uae
+Allow: /marble-suppliers-uae
+Allow: /electrical-contractors-uae
+Allow: /villa-renovation-uae
+Allow: /building-materials-uae
+Allow: /maintenance-services-uae
+Allow: /craftsmen-uae
+Allow: /cleaning-services-uae
+Allow: /equipment-rental-uae
+Allow: /furniture-decor-uae
+Allow: /provider/
+Allow: /provider/*
+Allow: /product/
+Allow: /product/*
+Allow: /privacy
+Allow: /terms
+Allow: /about
+Allow: /sitemap
+Allow: /press
+Allow: /webp
+
+# ❌ التطبيق الداخلي — لا تزحف (noindex)
+Disallow: /home
+Disallow: /services
+Disallow: /services/*
+Disallow: /shop
+Disallow: /shop/*
+Disallow: /store/
+Disallow: /maps
+Disallow: /marketplace
+Disallow: /recommendations
+Disallow: /offers
+Disallow: /tools
+Disallow: /tools/*
+Disallow: /dashboard
+Disallow: /dashboards
+Disallow: /platform
+Disallow: /profile
+Disallow: /profile/*
+Disallow: /app-profile/
+Disallow: /app-profile/*
+Disallow: /wallet
+Disallow: /notifications
+Disallow: /subscriptions
+Disallow: /messages
+Disallow: /install-pwa
+Disallow: /projects
+Disallow: /projects/*
+Disallow: /rfq
+Disallow: /connectors
+Disallow: /design
+Disallow: /ats
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /workspace
+Disallow: /wayak-computer
+Disallow: /wayak
+Disallow: /api/
+Disallow: /make-server-ad34c09a/
+
+# ════════════════════════════════════
+# Googlebot — إعدادات خاصة
+# ════════════════════════════════════
+User-agent: Googlebot
+Allow: /$
+Allow: /seo/
+Allow: /map/
+Allow: /contractors-in-uae
+Allow: /interior-design-uae
+Allow: /marble-suppliers-uae
+Allow: /electrical-contractors-uae
+Allow: /villa-renovation-uae
+Allow: /building-materials-uae
+Allow: /maintenance-services-uae
+Allow: /craftsmen-uae
+Allow: /cleaning-services-uae
+Allow: /equipment-rental-uae
+Allow: /furniture-decor-uae
+Allow: /provider/
+Allow: /product/
+Allow: /privacy
+Allow: /terms
+Allow: /about
+Allow: /sitemap
+Allow: /press
+Allow: /webp
+Disallow: /home
+Disallow: /services
+Disallow: /services/*
+Disallow: /profile
+Disallow: /admin
+Disallow: /make-server-ad34c09a/
+
+# ════════════════════════════════════
+# Googlebot-Image — صور الصفحات العامة
+# ════════════════════════════════════
+User-agent: Googlebot-Image
+Allow: /assets/
+Allow: /icons/
+Allow: /images/
+Disallow: /
+
+# ════════════════════════════════════
+# Bingbot
+# ════════════════════════════════════
+User-agent: Bingbot
+Allow: /$
+Allow: /seo/
+Allow: /map/
+Allow: /contractors-in-uae
+Allow: /interior-design-uae
+Allow: /building-materials-uae
+Allow: /maintenance-services-uae
+Allow: /provider/
+Allow: /privacy
+Allow: /terms
+Allow: /about
+Allow: /sitemap
+Allow: /press
+Disallow: /home
+Disallow: /services
+Disallow: /profile
+Disallow: /admin
+
+# ════════════════════════════════════
+# GPTBot (OpenAI) — GEO Visibility
+# ════════════════════════════════════
+User-agent: GPTBot
+Allow: /$
+Allow: /seo/
+Allow: /map/
+Allow: /contractors-in-uae
+Allow: /interior-design-uae
+Allow: /building-materials-uae
+Allow: /maintenance-services-uae
+Allow: /press
+Allow: /about
+Allow: /privacy
+Allow: /terms
+Disallow: /home
+Disallow: /services
+Disallow: /profile
+Disallow: /admin
+
+# ════════════════════════════════════
+# ClaudeBot (Anthropic) — GEO Visibility
+# ════════════════════════════════════
+User-agent: ClaudeBot
+Allow: /$
+Allow: /seo/
+Allow: /map/
+Allow: /press
+Allow: /about
+Allow: /privacy
+Allow: /terms
+Disallow: /home
+Disallow: /admin
+
+# ════════════════════════════════════
+# PerplexityBot — GEO Visibility
+# ════════════════════════════════════
+User-agent: PerplexityBot
+Allow: /$
+Allow: /seo/
+Allow: /map/
+Allow: /contractors-in-uae
+Allow: /interior-design-uae
+Allow: /building-materials-uae
+Allow: /press
+Allow: /about
+Disallow: /home
+Disallow: /admin
+
+# سرعة الزحف — لمنع الضغط على السيرفر
+Crawl-delay: 2
+
+# ════════════════════════════════════
+# Sitemaps
+# ════════════════════════════════════
+Sitemap: https://app.bietalreef.ae/sitemap.xml

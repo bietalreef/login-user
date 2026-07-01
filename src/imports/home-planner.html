@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3D Home Planner - Weyaak Marketplace</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config with App Brand Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        app: {
+                            orange: '#f8b469',
+                            teal: '#48c4b7',
+                            pink: '#fb8b9a',
+                            red: '#f06b7a',
+                            blue: '#5db1f0',
+                            purple: '#8c7bf0',
+                            yellow: '#f4c652',
+                            bg: '#fdfbf7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; overflow: hidden; margin: 0; padding: 0; touch-action: none; background-color: #fdfbf7; }
+        #canvas-container { width: 100%; height: 100%; display: block; outline: none; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        
+        .canvas-overlay { position: absolute; pointer-events: none; z-index: 10; }
+        .canvas-overlay > * { pointer-events: auto; }
+
+        /* App Icon Style */
+        .app-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        
+        .app-card {
+            background: white;
+            border: 1px solid #f3f4f6;
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .app-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+            border-color: #e5e7eb;
+        }
+
+        .color-swatch { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.2s; }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.active { border-color: #333; transform: scale(1.15); box-shadow: 0 0 0 2px #fff, 0 0 0 4px #333; }
+
+        .texture-swatch { width: 60px; height: 60px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.2s; overflow: hidden; position: relative;}
+        .texture-swatch img { width: 100%; height: 100%; object-fit: cover; }
+        .texture-swatch:hover { transform: scale(1.05); border-color: #48c4b7; }
+        .texture-swatch.active { border-color: #48c4b7; transform: scale(1.05); }
+        
+        .loading-spinner {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -8px;
+            margin-left: -8px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .sidebar-container { transition: transform 0.4s cubic-bezier(0.3, 1, 0.3, 1); }
+        .sidebar-closed { transform: translateX(100%); }
+        
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 4px;
+            background-color: #48c4b7;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .text-gemini { background: linear-gradient(to right, #4285f4, #9b72cb, #d96570); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .bg-gemini { background: linear-gradient(to right, #4285f4, #9b72cb, #d96570); }
+    </style>
+
+    <!-- Import Maps for Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body class="bg-app-bg flex h-screen text-gray-800 relative overflow-hidden">
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden" onclick="window.toggleSidebar()"></div>
+
+    <!-- UI Container (Sidebar + Nav) -->
+    <div id="ui-container" class="sidebar-container fixed inset-y-0 right-0 z-40 flex h-full md:relative md:translate-x-0 w-[85vw] sm:w-[450px] md:w-auto shadow-2xl md:shadow-none bg-white">
+        
+        <!-- Left Navigation Bar -->
+        <nav class="w-[80px] md:w-[90px] min-w-[80px] bg-white border-l border-gray-100 flex flex-col items-center py-4 shadow-sm h-full overflow-y-auto custom-scrollbar relative z-10">
+            <!-- Logo -->
+            <div class="mb-6 flex flex-col items-center">
+                <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center mb-1 shadow-md">
+                    <span class="text-white font-bold text-lg">B</span>
+                </div>
+                <span class="font-bold text-[10px] md:text-xs text-gray-700 mt-1">المخطط</span>
+            </div>
+
+            <!-- Menu Items -->
+            <div class="flex flex-col w-full space-y-2">
+                <button onclick="window.switchTab('create')" id="nav-create" class="nav-btn active group flex flex-col items-center py-3 px-1 text-gray-500 hover:text-gray-900 transition-all relative">
+                    <div class="w-11 h-11 rounded-xl bg-app-teal app-icon mb-1">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+                    </div>
+                    <span class="text-[9px] md:text-[10px] font-bold text-center">المساحة</span>
+                </button>
+                
+                <button onclick="window.switchTab('edit')" id="nav-edit" class="nav-btn group flex flex-col items-center py-3 px-1 text-gray-500 hover:text-gray-900 transition-all relative">
+                    <div class="w-11 h-11 rounded-xl bg-app-orange app-icon mb-1">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </div>
+                    <span class="text-[9px] md:text-[10px] font-bold text-center">التشطيب</span>
+                </button>
+
+                <button onclick="window.switchTab('add')" id="nav-add" class="nav-btn group flex flex-col items-center py-3 px-1 text-gray-500 hover:text-gray-900 transition-all relative">
+                    <div class="w-11 h-11 rounded-xl bg-app-pink app-icon mb-1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    </div>
+                    <span class="text-[9px] md:text-[10px] font-bold text-center">مكتبة وياك</span>
+                </button>
+
+                <!-- ✨ AI Tab ✨ -->
+                <button onclick="window.switchTab('ai')" id="nav-ai" class="nav-btn group flex flex-col items-center py-3 px-1 text-gray-500 hover:text-gray-900 transition-all relative">
+                    <div class="w-11 h-11 rounded-xl bg-app-purple app-icon mb-1">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+                    </div>
+                    <span class="text-[9px] md:text-[10px] font-bold text-center">مساعد وياك</span>
+                </button>
+
+                <!-- 🪄 Image to 3D Tab (Provider Tool) 🪄 -->
+                <button onclick="window.switchTab('img23d')" id="nav-img23d" class="nav-btn group flex flex-col items-center py-3 px-1 text-gray-500 hover:text-gray-900 transition-all relative">
+                    <div class="w-11 h-11 rounded-xl bg-app-blue app-icon mb-1">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    </div>
+                    <span class="text-[9px] md:text-[10px] font-bold text-center">بوابة المزود</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Sidebar Content Area -->
+        <aside class="flex-1 min-w-0 md:w-[350px] md:min-w-[350px] bg-gray-50 flex flex-col h-full relative">
+            
+            <!-- Header of Sidebar -->
+            <div class="px-5 py-5 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10 shadow-sm">
+                <h2 id="sidebar-title" class="text-lg font-bold text-gray-800">إعداد المساحة</h2>
+                <button onclick="window.toggleSidebar()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors cursor-pointer z-50">
+                    ✕
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-5 relative">
+                
+                <!-- Content: Create Space (Tab 1) -->
+                <div id="tab-create" class="tab-content block">
+                    <div class="bg-white border border-gray-100 rounded-xl p-4 mb-6 shadow-sm flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-teal-50 text-app-teal flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                        <p class="text-xs text-gray-600 font-semibold leading-relaxed">قم بإنشاء مساحتك الافتراضية. يمكنك لاحقاً تأثيثها من مكتبة وياك المركزية.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="app-card" onclick="window.switchTab('edit')">
+                            <div class="w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
+                                <div class="w-[80%] h-[80%] bg-[#8fa3bd] border-b-[12px] border-[#d2b48c] shadow-sm" style="transform: perspective(100px) rotateX(15deg);"></div>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700 mt-1">مساحة داخلية</span>
+                        </div>
+                        <div class="app-card" onclick="window.switchTab('edit')">
+                            <div class="w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                                <div class="w-[80%] h-[80%] bg-[#a09e99] border-b-[12px] border-gray-300 shadow-sm"></div>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700 mt-1">مساحة خارجية</span>
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-sm mb-3 text-gray-800">نماذج جاهزة للتعديل</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="app-card">
+                            <div class="w-full h-20 bg-orange-50 rounded-lg flex items-center justify-center text-app-orange">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10"/><path d="M21 11v6"/><path d="M3 14h18"/><path d="M6 11h3v-3H6z"/><path d="M11 11h8V8a2 2 0 0 0-2-2h-6v5z"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700 mt-1">غرفة أطفال</span>
+                        </div>
+                        <div class="app-card">
+                            <div class="w-full h-20 bg-purple-50 rounded-lg flex items-center justify-center text-app-purple">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14h16v4H4z"/><path d="M4 14V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6 18v2"/><path d="M18 18v2"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700 mt-1">غرفة معيشة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content: Edit Space (Tab 2) -->
+                <div id="tab-edit" class="tab-content hidden flex-col min-h-full">
+                    
+                    <h3 class="font-bold text-md mb-4 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-app-orange rounded-full block"></span> التجهيزات والتشطيب
+                    </h3>
+                    
+                    <div class="grid grid-cols-4 gap-y-6 gap-x-2 text-center mb-6">
+                        <div onclick="window.toggleStylePanel('wall')" class="flex flex-col items-center cursor-pointer group">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-2 text-2xl border border-gray-100 group-hover:border-app-teal">🧱</div>
+                            <span class="text-[10px] font-bold text-gray-600 group-hover:text-app-teal">جدران</span>
+                        </div>
+                        <div onclick="window.toggleStylePanel('floor')" class="flex flex-col items-center cursor-pointer group">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-2 text-2xl border border-gray-100 group-hover:border-app-orange">🟫</div>
+                            <span class="text-[10px] font-bold text-gray-600 group-hover:text-app-orange">أرضيات</span>
+                        </div>
+                        <div class="flex flex-col items-center cursor-pointer group">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-2 text-2xl border border-gray-100 group-hover:border-app-pink">🚪</div>
+                            <span class="text-[10px] font-bold text-gray-600 group-hover:text-app-pink">أبواب</span>
+                        </div>
+                        <div class="flex flex-col items-center cursor-pointer group">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-2 text-2xl border border-gray-100 group-hover:border-app-blue">🪟</div>
+                            <span class="text-[10px] font-bold text-gray-600 group-hover:text-app-blue">نوافذ</span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Style Panel -->
+                    <div id="style-panel" class="hidden bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-6">
+                        <h4 id="style-panel-title" class="text-sm font-bold mb-4 text-gray-800">تخصيص الخامات:</h4>
+                        
+                        <div class="mb-5">
+                            <span class="text-[11px] text-gray-500 font-bold mb-3 block">ألوان طلاء سادة</span>
+                            <div id="color-swatches" class="flex gap-3 flex-wrap justify-start"></div>
+                        </div>
+
+                        <div>
+                            <span class="text-[11px] text-gray-500 font-bold mb-3 block">نماذج وخامات جاهزة (كتالوج وياك)</span>
+                            <div id="texture-swatches" class="flex gap-3 flex-wrap justify-start"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content: Add Items (Tab 3) -->
+                <div id="tab-add" class="tab-content hidden">
+                    <div class="bg-white border border-gray-100 rounded-xl p-4 mb-6 shadow-sm">
+                        <h3 class="font-bold text-app-pink mb-1">مكتبة منصة وياك المركزية</h3>
+                        <p class="text-[11px] text-gray-500 font-semibold leading-relaxed">
+                            جميع المنتجات هنا معتمدة ومضمونة من قبل وياك. اختر ما يناسب تصميمك، ولن يشغل بالك مصدرها أو مزودها إلا عند الاعتماد والمعاينة النهائية!
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="app-card" onclick="if(window.addSpecificFurniture) window.addSpecificFurniture('#f06b7a', 'كرسي حديث')">
+                            <div class="w-12 h-12 rounded-xl bg-app-red app-icon mb-1">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M6 12v7"/><path d="M18 12v7"/><path d="M7 12V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v7"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700">كراسي وجلسات</span>
+                        </div>
+                        <div class="app-card" onclick="if(window.addSpecificFurniture) window.addSpecificFurniture('#8c7bf0', 'كنبة فاخرة')">
+                            <div class="w-12 h-12 rounded-xl bg-app-purple app-icon mb-1">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14h16v4H4z"/><path d="M4 14V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6 18v2"/><path d="M18 18v2"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700">أطقم كنب</span>
+                        </div>
+                        <div class="app-card" onclick="if(window.addSpecificFurniture) window.addSpecificFurniture('#f4c652', 'سرير مزدوج')">
+                            <div class="w-12 h-12 rounded-xl bg-app-yellow app-icon mb-1">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10"/><path d="M21 11v6"/><path d="M3 14h18"/><path d="M6 11h3v-3H6z"/><path d="M11 11h8V8a2 2 0 0 0-2-2h-6v5z"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700">غرف نوم</span>
+                        </div>
+                        <div class="app-card" onclick="if(window.addSpecificFurniture) window.addSpecificFurniture('#48c4b7', 'طاولة طعام')">
+                            <div class="w-12 h-12 rounded-xl bg-app-teal app-icon mb-1">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h18"/><path d="M5 8v10"/><path d="M19 8v10"/><path d="M3 12h18"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700">طاولات سفرة</span>
+                        </div>
+                        <div class="app-card" onclick="if(window.addSpecificFurniture) window.addSpecificFurniture('#f8b469', 'نباتات زينة')">
+                            <div class="w-12 h-12 rounded-xl bg-app-orange app-icon mb-1">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-9"/><path d="M12 13C8 13 4 9 4 5c4 0 8 4 8 8z"/><path d="M12 13c4 0 8-4 8-8-4 0-8 4-8 8z"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700">ديكورات وزينة</span>
+                        </div>
+                        <div class="app-card" onclick="if(window.addSpecificFurniture) window.addSpecificFurniture('#fb8b9a', 'وحدة تخزين')">
+                            <div class="w-12 h-12 rounded-xl bg-app-pink app-icon mb-1">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><path d="M4 12h16"/><path d="M12 4v16"/><path d="M8 8h.01"/><path d="M16 8h.01"/><path d="M8 16h.01"/><path d="M16 16h.01"/></svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700">خزائن وتنظيم</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✨ Content: AI Designer (Tab 4) ✨ -->
+                <div id="tab-ai" class="tab-content hidden flex-col min-h-full">
+                    <div class="bg-white p-5 rounded-2xl mb-6 shadow-sm border border-gray-100 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-full h-1 bg-app-purple"></div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-purple-100 text-app-purple flex items-center justify-center">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-sm text-gray-800">مساعد وياك الذكي</h3>
+                        </div>
+                        <p class="text-[11px] text-gray-500 leading-relaxed mb-4 font-semibold">مساعد وياك الذكي يحلل طلباتك أو صورك ويقترح لك التوزيع والأثاث المثالي من مكتبتنا المعتمدة.</p>
+                        
+                        <div class="mb-4">
+                            <textarea id="ai-prompt" rows="2" class="w-full p-4 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-app-purple focus:border-transparent outline-none resize-none bg-gray-50" placeholder="اكتب طلبك (مثال: أريد تأثيث مكتب عمل...)"></textarea>
+                            
+                            <div class="flex items-center justify-between mt-2 px-1">
+                                <span class="text-[10px] text-gray-400 font-bold">أو ابحث باستخدام صورة:</span>
+                                <div class="flex gap-2">
+                                    <button onclick="document.getElementById('ai-image-upload').click()" class="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors" title="رفع صورة">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    </button>
+                                    <button onclick="document.getElementById('ai-camera-capture').click()" class="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors" title="التقاط صورة">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                    </button>
+                                    <input type="file" id="ai-image-upload" accept="image/*" class="hidden" onchange="window.handleAIVisionSearch(event)">
+                                    <input type="file" id="ai-camera-capture" accept="image/*" capture="environment" class="hidden" onchange="window.handleAIVisionSearch(event)">
+                                </div>
+                            </div>
+                            <div id="ai-image-preview" class="hidden mt-2 p-2 bg-gray-50 rounded-lg border border-gray-200 items-center justify-between">
+                                <div class="flex items-center gap-2 overflow-hidden">
+                                    <img id="ai-preview-img" src="" class="w-8 h-8 rounded object-cover border border-gray-300">
+                                    <span class="text-[10px] text-gray-600 truncate" id="ai-image-name">تم إرفاق صورة</span>
+                                </div>
+                                <button onclick="window.clearAIImage()" class="text-red-500 hover:text-red-700 text-[10px] font-bold px-2">إزالة</button>
+                            </div>
+                        </div>
+
+                        <button onclick="if(window.callGeminiDesigner) window.callGeminiDesigner()" class="w-full bg-app-purple text-white font-bold py-3 rounded-xl hover:bg-purple-600 transition-colors shadow-md flex items-center justify-center gap-2">
+                            <span>اقتراح التصميم</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                    <div id="ai-response-area" class="flex-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 hidden overflow-y-auto"></div>
+                </div>
+
+                <!-- 🪄 Content: Image to 3D (Tab 5) 🪄 -->
+                <div id="tab-img23d" class="tab-content hidden flex-col min-h-full">
+                    <div class="bg-white p-5 rounded-2xl mb-6 shadow-sm border border-gray-100 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-full h-1 bg-app-blue"></div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-50 text-app-blue flex items-center justify-center">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            </div>
+                            <h3 class="font-bold text-sm text-gray-800">بوابة مزودي الخدمات</h3>
+                        </div>
+                        <p class="text-[11px] text-gray-500 leading-relaxed mb-4 font-semibold">
+                            هذه الأداة مخصصة <strong>لمزودي الخدمات والموردين</strong>. قم برفع صور منتجاتك الحقيقية، وسيقوم الذكاء الاصطناعي ببناء مجسم 3D لها وإدراجها في مكتبة منصة وياك المركزية.
+                        </p>
+                        
+                        <div class="border-2 border-dashed border-app-blue/50 rounded-xl p-8 bg-blue-50/30 hover:bg-blue-50 transition-colors cursor-pointer text-center" onclick="document.getElementById('provider-upload').click()">
+                            <svg class="mx-auto text-app-blue mb-2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <span class="text-[11px] font-bold text-gray-700 block">اضغط لرفع صورة المنتج</span>
+                            <span class="text-[9px] text-gray-400 block mt-1">يجب أن تكون خلفية الصورة واضحة</span>
+                            <input type="file" id="provider-upload" accept="image/*" class="hidden" onchange="if(window.processImageTo3D) window.processImageTo3D(event)">
+                        </div>
+                    </div>
+                    <div id="img23d-response-area" class="flex-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 hidden"></div>
+                </div>
+
+            </div>
+        </aside>
+    </div>
+
+    <!-- Main 3D Canvas Area -->
+    <main class="flex-1 relative w-full h-full bg-gradient-to-b from-[#f3f4f6] to-[#e5e7eb]">
+        
+        <!-- Header Controls -->
+        <div class="canvas-overlay top-0 left-0 right-0 p-4 md:p-6 flex justify-between items-start z-20">
+            <button id="menu-toggle-btn" onclick="window.toggleSidebar()" class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-gray-700 shadow-md transition-transform hidden cursor-pointer border border-gray-100">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <div class="relative cursor-pointer w-auto px-4 h-12 bg-white rounded-xl flex items-center justify-center gap-2 mr-auto shadow-md border border-gray-100 text-gray-600">
+                <span class="text-[11px] font-bold">سلة وياك للطلب</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span id="cart-counter" class="absolute -top-2 -right-2 bg-app-teal text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm transition-transform duration-300">0</span>
+            </div>
+        </div>
+
+        <div id="canvas-container" class="cursor-default absolute inset-0"></div>
+
+        <!-- Popups -->
+        <div id="selection-ui" class="absolute hidden flex items-center bg-white/95 backdrop-blur-md rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-gray-100 p-1.5 gap-1.5 transform -translate-x-1/2 -translate-y-[130%] z-30 transition-all duration-200" style="pointer-events: auto;">
+            <button class="bg-app-teal text-white text-[10px] font-bold px-4 py-2 rounded-lg whitespace-nowrap hover:bg-teal-500 transition-colors" onclick="if(window.incrementCart) window.incrementCart()">إضافة لسلة المنصة</button>
+            <div class="h-6 w-px bg-gray-100 mx-1"></div>
+            <button class="w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors" onclick="if(window.deleteSelected) window.deleteSelected()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+            <button class="w-8 h-8 text-gray-400 hover:text-gray-800 flex items-center justify-center transition-colors" onclick="if(window.deselectAll) window.deselectAll()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <div class="canvas-overlay bottom-6 right-6 flex gap-3 z-20">
+            <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-gray-600 shadow-md border border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer" onclick="if(window.resetCamera) window.resetCamera()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </button>
+        </div>
+    </main>
+
+    <!-- UI Logic -->
+    <script>
+        let isSidebarOpen = true;
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('ui-container');
+            const menuBtn = document.getElementById('menu-toggle-btn');
+            const overlay = document.getElementById('mobile-overlay');
+
+            if (!sidebar || !menuBtn || !overlay) return;
+
+            isSidebarOpen = !isSidebarOpen;
+
+            if (isSidebarOpen) {
+                sidebar.classList.remove('sidebar-closed');
+                menuBtn.classList.add('hidden');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+                menuBtn.classList.remove('hidden');
+                overlay.classList.add('hidden');
+            }
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 400);
+        }
+
+        if (window.innerWidth < 768) {
+            setTimeout(window.toggleSidebar, 100);
+        }
+
+        window.switchTab = function(tab) {
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const activeNav = document.getElementById(`nav-${tab}`);
+            if(activeNav) {
+                activeNav.classList.add('active');
+            }
+
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+            contents.forEach(content => content.classList.remove('block', 'flex'));
+
+            const targetTab = document.getElementById(`tab-${tab}`);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                if (tab === 'edit' || tab === 'ai' || tab === 'img23d') {
+                    targetTab.classList.add('flex');
+                } else {
+                    targetTab.classList.add('block');
+                }
+            }
+
+            const titles = { 
+                'create': 'إعداد المساحة', 
+                'edit': 'تشطيب الأرضيات والجدران', 
+                'add': 'مكتبة منصة وياك', 
+                'ai': 'مساعد وياك الذكي', 
+                'img23d': 'أداة الموردين (رقمنة الأثاث)' 
+            };
+            const titleEl = document.getElementById('sidebar-title');
+            if(titleEl) titleEl.innerText = titles[tab] || 'مساحة';
+
+            if(!isSidebarOpen) window.toggleSidebar();
+        }
+
+        // Data for Styles
+        const styleData = {
+            wall: {
+                colors: [
+                    { hex: '#8fa3bd', name: 'أزرق رمادي' }, { hex: '#fdfbf7', name: 'أوف وايت' },
+                    { hex: '#d1c7bd', name: 'بيج دافئ' }, { hex: '#7b8c7c', name: 'أخضر مريمية' }
+                ],
+                textures: [
+                    { url: 'https://images.unsplash.com/photo-1615800098779-1be32e60cca3?auto=format&fit=crop&w=200&q=80', name: 'زخارف كلاسيكية' },
+                    { url: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=200&q=80', name: 'تجريدي حديث' },
+                    { url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=200&q=80', name: 'تكسية خشبية' }
+                ]
+            },
+            floor: {
+                colors: [
+                    { hex: '#d2b48c', name: 'خشب طبيعي' }, { hex: '#8b5a2b', name: 'خشب داكن' },
+                    { hex: '#e8e5df', name: 'رخام فاتح' }, { hex: '#696969', name: 'أسمنت حديث' }
+                ],
+                textures: [
+                    { url: 'https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&w=200&q=80', name: 'باركيه' },
+                    { url: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=200&q=80', name: 'سيراميك' },
+                    { url: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=200&q=80', name: 'رخام' }
+                ]
+            }
+        };
+
+        window.toggleStylePanel = function(targetType) {
+            const panel = document.getElementById('style-panel');
+            const title = document.getElementById('style-panel-title');
+            const swatchesContainer = document.getElementById('color-swatches');
+            const textureContainer = document.getElementById('texture-swatches');
+            
+            if (!panel || !title || !swatchesContainer || !textureContainer) return;
+
+            panel.classList.remove('hidden');
+            title.innerText = targetType === 'wall' ? 'كتالوج الجدران:' : 'كتالوج الأرضيات:';
+            
+            swatchesContainer.innerHTML = '';
+            styleData[targetType].colors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'color-swatch';
+                div.style.backgroundColor = color.hex;
+                div.title = color.name;
+                div.onclick = () => {
+                    document.querySelectorAll('.color-swatch, .texture-swatch').forEach(s => s.classList.remove('active'));
+                    div.classList.add('active');
+                    window.dispatchEvent(new CustomEvent('updateMaterialStyle', { detail: { type: targetType, mode: 'color', value: color.hex } }));
+                };
+                swatchesContainer.appendChild(div);
+            });
+
+            textureContainer.innerHTML = '';
+            styleData[targetType].textures.forEach(texture => {
+                const div = document.createElement('div');
+                div.className = 'texture-swatch';
+                div.title = texture.name;
+                const img = document.createElement('img');
+                img.src = texture.url;
+                div.appendChild(img);
+                div.onclick = () => {
+                    document.querySelectorAll('.color-swatch, .texture-swatch').forEach(s => s.classList.remove('active'));
+                    div.classList.add('active');
+                    const spinner = document.createElement('div');
+                    spinner.className = 'loading-spinner';
+                    div.appendChild(spinner);
+                    window.dispatchEvent(new CustomEvent('updateMaterialStyle', { 
+                        detail: { 
+                            type: targetType, mode: 'texture', value: texture.url,
+                            onComplete: () => { if(div.contains(spinner)) div.removeChild(spinner); }
+                        } 
+                    }));
+                };
+                textureContainer.appendChild(div);
+            });
+        }
+    </script>
+
+    <!-- Three.js 3D Editor Logic -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        const container = document.getElementById('canvas-container');
+        if (container) {
+            const scene = new THREE.Scene();
+            scene.background = null; 
+
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 - 0.05;
+
+            window.resetCamera = () => {
+                camera.position.set(12, 10, 15);
+                controls.target.set(0, 2, 0);
+                controls.update();
+            };
+            window.resetCamera();
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            dirLight.position.set(10, 25, 15);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            dirLight.shadow.camera.near = 0.5;
+            dirLight.shadow.camera.far = 50;
+            dirLight.shadow.bias = -0.001;
+            scene.add(dirLight);
+
+            // --- Materials ---
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x8fa3bd, roughness: 0.9 });
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0xd2b48c, roughness: 0.8 });
+            const baseboardMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+            
+            const textureLoader = new THREE.TextureLoader();
+
+            window.addEventListener('updateMaterialStyle', (e) => {
+                const targetMat = e.detail.type === 'wall' ? wallMat : floorMat;
+                if (e.detail.mode === 'color') {
+                    targetMat.map = null;
+                    targetMat.color.set(e.detail.value);
+                    targetMat.needsUpdate = true;
+                } else if (e.detail.mode === 'texture') {
+                    textureLoader.load(e.detail.value, function(texture) {
+                        texture.colorSpace = THREE.SRGBColorSpace;
+                        texture.wrapS = THREE.RepeatWrapping;
+                        texture.wrapT = THREE.RepeatWrapping;
+                        if (e.detail.type === 'wall') { texture.repeat.set(2, 1); } 
+                        else { texture.repeat.set(3, 3); }
+                        targetMat.color.set(0xffffff);
+                        targetMat.map = texture;
+                        targetMat.needsUpdate = true;
+                        if(e.detail.onComplete) e.detail.onComplete();
+                    });
+                }
+            });
+
+            const interactables = [];
+            const dioramaGroup = new THREE.Group();
+            
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), floorMat);
+            floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true;
+            floor.userData = { isInteractable: true, type: 'floor' };
+            dioramaGroup.add(floor); interactables.push(floor);
+
+            const backWall = new THREE.Mesh(new THREE.BoxGeometry(10, 4, 0.2), wallMat);
+            backWall.position.set(0, 2, -5.1); backWall.receiveShadow = true;
+            backWall.userData = { isInteractable: true, type: 'wall' };
+            dioramaGroup.add(backWall); interactables.push(backWall);
+
+            const sideWall = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4, 10), wallMat);
+            sideWall.position.set(-5.1, 2, 0); sideWall.receiveShadow = true;
+            sideWall.userData = { isInteractable: true, type: 'wall' };
+            dioramaGroup.add(sideWall); interactables.push(sideWall);
+
+            scene.add(dioramaGroup);
+
+            // Initial Table
+            const tableGroup = new THREE.Group();
+            const top = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.05, 32), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1 }));
+            top.position.y = 1; top.castShadow = true; tableGroup.add(top);
+            const shelf = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.02, 32), new THREE.MeshStandardMaterial({color: 0x333333}));
+            shelf.position.y = 0.3; shelf.castShadow = true; tableGroup.add(shelf);
+            const legMat = new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.8 });
+            for(let i=0; i<4; i++) {
+                const angle = (i / 4) * Math.PI * 2;
+                const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1), legMat);
+                leg.position.set(Math.cos(angle) * 0.4, 0.5, Math.sin(angle) * 0.4);
+                leg.castShadow = true; tableGroup.add(leg);
+            }
+            const tableHitbox = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.2, 16), new THREE.MeshBasicMaterial({visible: false}));
+            tableHitbox.position.y = 0.5; tableGroup.add(tableHitbox);
+            tableGroup.userData = { isInteractable: true, isDraggable: true, type: 'furniture' };
+            tableHitbox.userData = tableGroup.userData; tableHitbox.parentGroup = tableGroup;
+            scene.add(tableGroup); interactables.push(tableHitbox);
+
+            // UI Overlay Elements
+            const selectionUI = document.getElementById('selection-ui');
+            let selectedObject = null;
+
+            function updateUIPosition() {
+                if (!selectedObject) {
+                    if (selectionUI) selectionUI.classList.add('hidden');
+                    return;
+                }
+                const box = new THREE.Box3().setFromObject(selectedObject);
+                const height = box.max.y - box.min.y;
+                const pos = selectedObject.position.clone();
+                pos.y += (height / 2) + 0.3; 
+                pos.project(camera);
+                const rect = container.getBoundingClientRect();
+                const x = (pos.x * .5 + .5) * rect.width;
+                const y = (pos.y * -.5 + .5) * rect.height;
+
+                if (pos.z > 1) { 
+                    if (selectionUI) selectionUI.classList.add('hidden'); 
+                    return; 
+                }
+                if (selectionUI) {
+                    selectionUI.classList.remove('hidden');
+                    selectionUI.style.left = `${x}px`;
+                    selectionUI.style.top = `${y}px`;
+                }
+            }
+
+            window.deselectAll = function() {
+                selectedObject = null;
+                if (selectionUI) selectionUI.classList.add('hidden');
+            }
+
+            window.deleteSelected = function() {
+                if(selectedObject) {
+                    scene.remove(selectedObject);
+                    const index = interactables.findIndex(obj => obj.parentGroup === selectedObject || obj === selectedObject);
+                    if(index > -1) interactables.splice(index, 1);
+                    window.deselectAll();
+                }
+            }
+
+            // --- Interaction Logic ---
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            let isDragging = false, dragObject = null, dragPlane = new THREE.Plane(), dragOffset = new THREE.Vector3(), intersection = new THREE.Vector3();
+
+            container.addEventListener('pointermove', onPointerMove);
+            container.addEventListener('pointerdown', onPointerDown);
+            container.addEventListener('pointerup', onPointerUp);
+
+            function updateMousePos(event) {
+                const rect = container.getBoundingClientRect();
+                mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            }
+
+            function onPointerMove(event) {
+                updateMousePos(event);
+                raycaster.setFromCamera(mouse, camera);
+                if (isDragging && dragObject) {
+                    raycaster.ray.intersectPlane(dragPlane, intersection);
+                    if (intersection) {
+                        const newPos = intersection.sub(dragOffset);
+                        if (dragObject.userData.type === 'furniture') {
+                            let nx = Math.max(-4.5, Math.min(4.5, newPos.x));
+                            let nz = Math.max(-4.5, Math.min(4.5, newPos.z));
+                            dragObject.position.set(nx, dragObject.position.y, nz);
+                        }
+                        updateUIPosition();
+                    }
+                    return;
+                }
+                const intersects = raycaster.intersectObjects(interactables, false);
+                if (intersects.length > 0) {
+                    container.style.cursor = intersects[0].object.userData.isDraggable ? 'move' : 'pointer';
+                } else {
+                    container.style.cursor = 'default';
+                }
+            }
+
+            function onPointerDown(event) {
+                updateMousePos(event);
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(interactables, false);
+                if (intersects.length > 0) {
+                    const object = intersects[0].object;
+                    if (object.userData.isDraggable) {
+                        isDragging = true;
+                        dragObject = object.parentGroup || object;
+                        controls.enabled = false;
+                        selectedObject = dragObject;
+                        updateUIPosition();
+                        if (dragObject.userData.type === 'furniture') {
+                            dragPlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 1, 0), dragObject.position);
+                        }
+                        raycaster.ray.intersectPlane(dragPlane, intersection);
+                        if(intersection) dragOffset.copy(intersection).sub(dragObject.position);
+                    } else if (object.userData.type === 'wall' || object.userData.type === 'floor') {
+                        window.deselectAll();
+                        if(typeof window.switchTab === 'function') {
+                            window.switchTab('edit');
+                            if(typeof window.toggleStylePanel === 'function') window.toggleStylePanel(object.userData.type);
+                        }
+                    }
+                } else {
+                    window.deselectAll();
+                }
+            }
+
+            function onPointerUp() { isDragging = false; dragObject = null; controls.enabled = true; }
+
+            // --- Add Items Logic ---
+            window.incrementCart = function() {
+                const cartBadge = document.getElementById('cart-counter');
+                if (cartBadge) {
+                    cartBadge.innerText = parseInt(cartBadge.innerText) + 1;
+                    cartBadge.classList.add('scale-125');
+                    setTimeout(() => cartBadge.classList.remove('scale-125'), 200);
+                }
+            }
+
+            window.addSpecificFurniture = function(colorValue, name = "") {
+                const size = 0.5 + Math.random() * 0.5;
+                const color = new THREE.Color(colorValue);
+                const group = new THREE.Group();
+                const geometry = new THREE.BoxGeometry(size, size * 0.8, size * 1.5);
+                const material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.6, metalness: 0.1 });
+                const box = new THREE.Mesh(geometry, material);
+                box.position.y = (size * 0.8)/2;
+                box.castShadow = true; box.receiveShadow = true;
+                group.add(box);
+
+                const hitbox = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({visible: false}));
+                hitbox.position.copy(box.position);
+                group.add(hitbox);
+
+                group.userData = { isInteractable: true, isDraggable: true, type: 'furniture', name: name };
+                hitbox.userData = group.userData; hitbox.parentGroup = group;
+                group.position.set((Math.random() - 0.5) * 6, 0, (Math.random() - 0.5) * 6);
+                group.rotation.y = Math.random() * Math.PI;
+                
+                group.position.y += 3;
+                const dropAnim = setInterval(() => {
+                    group.position.y -= 0.2;
+                    if(group.position.y <= 0) { group.position.y = 0; clearInterval(dropAnim); }
+                }, 16);
+
+                scene.add(group); interactables.push(hitbox);
+                setTimeout(() => { selectedObject = group; updateUIPosition(); }, 500);
+
+                if (window.innerWidth < 768 && typeof window.toggleSidebar === 'function') window.toggleSidebar();
+            };
+
+            window.spawnProceduralModel = function(type, colorHex, name) {
+                const color = new THREE.Color(colorHex);
+                const group = new THREE.Group();
+                const mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.6, metalness: 0.1 });
+                const edgesMat = new THREE.LineBasicMaterial({ color: 0x000000, opacity: 0.2, transparent: true });
+
+                function addShape(geo, y, z=0, rx=0) {
+                    const mesh = new THREE.Mesh(geo, mat);
+                    mesh.position.set(0, y, z);
+                    if(rx) mesh.rotation.x = rx;
+                    mesh.castShadow = true; mesh.receiveShadow = true;
+                    mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgesMat));
+                    group.add(mesh);
+                    return mesh;
+                }
+
+                type = type.toLowerCase();
+                if (type.includes('chair') || type.includes('كرسي')) {
+                    addShape(new THREE.BoxGeometry(0.6, 0.1, 0.6), 0.5); 
+                    addShape(new THREE.BoxGeometry(0.6, 0.6, 0.1), 0.85, -0.25);
+                    const legGeo = new THREE.CylinderGeometry(0.04, 0.03, 0.5, 8);
+                    addShape(legGeo, 0.25, -0.25).position.x = -0.25; addShape(legGeo, 0.25, -0.25).position.x = 0.25;
+                    addShape(legGeo, 0.25, 0.25).position.x = -0.25; addShape(legGeo, 0.25, 0.25).position.x = 0.25;
+                } else if (type.includes('sofa') || type.includes('كنب')) {
+                    addShape(new THREE.BoxGeometry(2.0, 0.4, 0.8), 0.3);
+                    addShape(new THREE.BoxGeometry(2.0, 0.6, 0.2), 0.7, -0.3);
+                    addShape(new THREE.BoxGeometry(0.2, 0.5, 0.8), 0.55, 0).position.x = -0.9;
+                    addShape(new THREE.BoxGeometry(0.2, 0.5, 0.8), 0.55, 0).position.x = 0.9;
+                } else if (type.includes('bed') || type.includes('سرير')) {
+                    addShape(new THREE.BoxGeometry(1.6, 0.4, 2.2), 0.2);
+                    addShape(new THREE.BoxGeometry(1.6, 1.0, 0.2), 0.5, -1.0);
+                } else if (type.includes('cabinet') || type.includes('خزانة')) {
+                    addShape(new THREE.BoxGeometry(1.0, 1.5, 0.5), 0.75);
+                } else {
+                    addShape(new THREE.CylinderGeometry(0.6, 0.6, 0.05, 32), 0.8);
+                    addShape(new THREE.CylinderGeometry(0.05, 0.05, 0.8, 16), 0.4);
+                    addShape(new THREE.BoxGeometry(0.8, 0.05, 0.8), 0.02);
+                }
+
+                const box3 = new THREE.Box3().setFromObject(group);
+                const size = new THREE.Vector3(); box3.getSize(size);
+                const center = new THREE.Vector3(); box3.getCenter(center);
+
+                const hitbox = new THREE.Mesh(new THREE.BoxGeometry(size.x, size.y, size.z), new THREE.MeshBasicMaterial({visible: false}));
+                hitbox.position.copy(center);
+                group.add(hitbox);
+
+                group.userData = { isInteractable: true, isDraggable: true, type: 'furniture', name: name };
+                hitbox.userData = group.userData; hitbox.parentGroup = group;
+                group.position.set((Math.random() - 0.5) * 4, 0, (Math.random() - 0.5) * 4);
+                group.rotation.y = Math.random() * Math.PI;
+
+                group.position.y += 3;
+                const dropAnim = setInterval(() => {
+                    group.position.y -= 0.2;
+                    if(group.position.y <= 0) { group.position.y = 0; clearInterval(dropAnim); }
+                }, 16);
+
+                scene.add(group); interactables.push(hitbox); window.incrementCart();
+                setTimeout(() => { selectedObject = group; updateUIPosition(); }, 500);
+                if (window.innerWidth < 768 && typeof window.toggleSidebar === 'function') window.toggleSidebar();
+            };
+
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                updateUIPosition();
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                if(selectedObject) updateUIPosition();
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        // --- Gemini AI Functions ---
+        let currentAIVisionData = null;
+        let currentAIVisionMimeType = null;
+
+        window.handleAIVisionSearch = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentAIVisionData = e.target.result.split(',')[1];
+                currentAIVisionMimeType = file.type;
+                
+                const previewContainer = document.getElementById('ai-image-preview');
+                const previewImg = document.getElementById('ai-preview-img');
+                const nameSpan = document.getElementById('ai-image-name');
+                
+                if (previewContainer && previewImg && nameSpan) {
+                    previewImg.src = e.target.result;
+                    nameSpan.textContent = file.name || 'تم التقاط صورة';
+                    previewContainer.classList.remove('hidden');
+                    previewContainer.classList.add('flex');
+                }
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        };
+
+        window.clearAIImage = function() {
+            currentAIVisionData = null;
+            currentAIVisionMimeType = null;
+            const previewContainer = document.getElementById('ai-image-preview');
+            if (previewContainer) {
+                previewContainer.classList.add('hidden');
+                previewContainer.classList.remove('flex');
+            }
+        };
+
+        window.processImageTo3D = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const responseArea = document.getElementById('img23d-response-area');
+            if (responseArea) {
+                responseArea.classList.remove('hidden');
+                responseArea.innerHTML = `<div class="flex flex-col items-center py-6"><div class="w-8 h-8 border-4 border-app-blue border-t-transparent rounded-full animate-spin mb-3"></div><p class="text-xs font-bold text-gray-500">جاري تحليل بيانات المنتج وبناء المجسم للمنصة... 🪄</p></div>`;
+            }
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Data = e.target.result.split(',')[1], mimeType = file.type, apiKey = "";
+                const systemPrompt = `أنت مساعد مزود الخدمة لاستخراج بيانات المنتجات. حلل صورة الأثاث. استخرج نوعه ولونه. أرجع كائن JSON فقط بالصيغة التالية: { "type": "طاولة|كرسي|كنب|خزانة|سرير", "colorHex": "#RRGGBB", "name": "اسم المنتج باللغة العربية" }`;
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: systemPrompt }, { inlineData: { mimeType: mimeType, data: base64Data } }] }], generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { type: { type: "STRING" }, colorHex: { type: "STRING" }, name: { type: "STRING" } }, required: ["type", "colorHex", "name"] } } })
+                    });
+                    if (!response.ok) throw new Error(`HTTP error!`);
+                    const data = await response.json(), jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (jsonText) {
+                        const result = JSON.parse(jsonText);
+                        if (responseArea) responseArea.innerHTML = `<h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm"><span class="text-app-teal">✅</span> تمت رقمنة المنتج بنجاح!</h4><div class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-100"><span class="w-8 h-8 rounded-full border-2 border-white shadow-md" style="background-color: ${result.colorHex}"></span><div><span class="text-xs text-gray-800 font-bold block">${result.name}</span><span class="text-[10px] text-gray-500">النوع: ${result.type} | تم الإدراج في مكتبة المنصة</span></div></div>`;
+                        
+                        // Pass type as english for the procedural builder logic to understand it
+                        let enType = 'table';
+                        if(result.type.includes('كرسي')) enType = 'chair';
+                        else if(result.type.includes('كنب')) enType = 'sofa';
+                        else if(result.type.includes('سرير')) enType = 'bed';
+                        else if(result.type.includes('خزانة')) enType = 'cabinet';
+
+                        if(typeof window.spawnProceduralModel === 'function') window.spawnProceduralModel(enType, result.colorHex, result.name);
+                    }
+                } catch (error) {
+                    if (responseArea) responseArea.innerHTML = `<div class="bg-red-50 text-red-600 p-3 rounded-lg text-xs font-bold border border-red-100">حدث خطأ، تأكد من تشغيل الأداة في بيئة Canvas لمصادقة المفتاح.</div>`;
+                }
+            };
+            reader.readAsDataURL(file); event.target.value = '';
+        };
+
+        window.callGeminiDesigner = async function() {
+            const inputField = document.getElementById('ai-prompt');
+            const responseArea = document.getElementById('ai-response-area');
+            if (!inputField || !responseArea) return;
+            
+            const promptText = inputField.value.trim();
+
+            if (!promptText && !currentAIVisionData) { 
+                alert("الرجاء إدخال طلبك النصي أو إرفاق صورة للبحث."); 
+                return; 
+            }
+
+            responseArea.classList.remove('hidden');
+            responseArea.innerHTML = `<div class="flex flex-col items-center py-6"><div class="w-8 h-8 border-4 border-app-purple border-t-transparent rounded-full animate-spin mb-3"></div><p class="text-xs font-bold text-gray-500">جاري البحث في مكتبة وياك وتنسيق مساحتك... ✨</p></div>`;
+            
+            const systemPrompt = `أنت مساعد وياك الذكي. حلل طلب المستخدم النصي والصورة (إن وجدت). استخرج تصميم مناسب واقترح أثاثاً يطابق النمط. أرجع كائن JSON فقط: { "advice": "رسالة ترحيبية تشرح التنسيق المختار وتشير للصورة إذا وجدت", "items": [ { "name": "اسم المنتج", "colorHex": "#ff0000" } ] } اختر 1-3 منتجات.`;
+            const apiKey = "";
+            
+            let requestParts = [{ text: systemPrompt }];
+            if (promptText) {
+                requestParts.push({ text: `طلب المستخدم: ${promptText}` });
+            }
+            if (currentAIVisionData && currentAIVisionMimeType) {
+                requestParts.push({ inlineData: { mimeType: currentAIVisionMimeType, data: currentAIVisionData } });
+            }
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contents: [{ parts: requestParts }], 
+                        generationConfig: { 
+                            responseMimeType: "application/json", 
+                            responseSchema: { 
+                                type: "OBJECT", 
+                                properties: { 
+                                    advice: { type: "STRING" }, 
+                                    items: { 
+                                        type: "ARRAY", 
+                                        items: { 
+                                            type: "OBJECT", 
+                                            properties: { name: { type: "STRING" }, colorHex: { type: "STRING" } }, 
+                                            required: ["name", "colorHex"] 
+                                        } 
+                                    } 
+                                }, 
+                                required: ["advice", "items"] 
+                            } 
+                        } 
+                    })
+                });
+                if (!response.ok) throw new Error(`HTTP error!`);
+                const data = await response.json();
+                const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (jsonText) {
+                    const result = JSON.parse(jsonText);
+                    let html = `<h4 class="font-bold text-gray-800 mb-2 flex items-center gap-1 text-sm"><span class="text-app-purple">💡</span> اقتراح وياك</h4><p class="text-[11px] text-gray-600 mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100 leading-relaxed font-semibold">${result.advice}</p><div class="space-y-2">`;
+                    result.items.forEach(item => {
+                        html += `<div class="flex items-center gap-3 bg-gray-50 p-2 rounded-lg border border-gray-100"><span class="w-6 h-6 rounded-md border shadow-inner shrink-0" style="background-color: ${item.colorHex}"></span><span class="text-xs text-gray-700 font-bold">${item.name}</span></div>`;
+                        
+                        // Infer type for procedural generation
+                        let enType = 'table';
+                        if(item.name.toLowerCase().includes('كرسي')) enType = 'chair';
+                        else if(item.name.toLowerCase().includes('كنب') || item.name.toLowerCase().includes('صوفا')) enType = 'sofa';
+                        else if(item.name.toLowerCase().includes('سرير')) enType = 'bed';
+                        else if(item.name.toLowerCase().includes('خزانة') || item.name.toLowerCase().includes('دولاب')) enType = 'cabinet';
+
+                        if (typeof window.spawnProceduralModel === 'function') {
+                            window.spawnProceduralModel(enType, item.colorHex, item.name);
+                        } else if (typeof window.addSpecificFurniture === 'function') {
+                            window.addSpecificFurniture(item.colorHex, item.name);
+                        }
+                    });
+                    html += `</div>`; 
+                    responseArea.innerHTML = html; 
+                    
+                    // Cleanup
+                    inputField.value = '';
+                    window.clearAIImage();
+                }
+            } catch (error) {
+                responseArea.innerHTML = `<div class="bg-red-50 text-red-600 p-3 rounded-lg text-xs font-bold border border-red-100">حدث خطأ، يرجى تشغيل الأداة داخل بيئة Canvas.</div>`;
+            }
+        };
+    </script>
+</body>
+</html>

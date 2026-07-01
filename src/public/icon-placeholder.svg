@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="url(#gradient)"/>
+  
+  <!-- Gradient -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C8A86A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- House Icon (Simplified) -->
+  <g transform="translate(128, 128)">
+    <!-- Roof -->
+    <path d="M128 32 L256 128 L224 128 L224 256 L32 256 L32 128 L0 128 Z" fill="#FFFFFF" opacity="0.95"/>
+    
+    <!-- Door -->
+    <rect x="96" y="176" width="64" height="80" rx="4" fill="#D4AF37"/>
+    
+    <!-- Window Left -->
+    <rect x="48" y="144" width="32" height="32" rx="4" fill="#FFD700"/>
+    
+    <!-- Window Right -->
+    <rect x="176" y="144" width="32" height="32" rx="4" fill="#FFD700"/>
+  </g>
+  
+  <!-- Text: بيت الريف -->
+  <text x="256" y="420" font-family="Cairo, Arial, sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF" text-anchor="middle">بيت الريف</text>
+</svg>

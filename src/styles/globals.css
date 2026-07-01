@@ -1,0 +1,408 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #F5EEE1;
+  --foreground: #1F3D2B;
+  --card: #ffffff;
+  --card-foreground: #1F3D2B;
+  --popover: #ffffff;
+  --popover-foreground: #1F3D2B;
+  --primary: #D4AF37;
+  --primary-foreground: #0B1120;
+  --secondary: #F5EEE1;
+  --secondary-foreground: #1F3D2B;
+  --muted: #EDE5D5;
+  --muted-foreground: #6B7E73;
+  --accent: #EDE5D5;
+  --accent-foreground: #1F3D2B;
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(31, 61, 43, 0.10);
+  --input: transparent;
+  --input-background: #ffffff;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: rgba(212, 175, 55, 0.40);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: #F5EEE1;
+  --sidebar-foreground: #1F3D2B;
+  --sidebar-primary: #D4AF37;
+  --sidebar-primary-foreground: #0B1120;
+  --sidebar-accent: #EDE5D5;
+  --sidebar-accent-foreground: #1F3D2B;
+  --sidebar-border: rgba(31, 61, 43, 0.08);
+  --sidebar-ring: rgba(212, 175, 55, 0.30);
+
+  /* ═════════════════════════════════════════════
+     بيت الريف — الهوية الرملية ✨
+     Sandy Beige Brand Identity + iOS Glow Style
+     ═══════════════════════════════════════════════ */
+  --bait-bg:                #F5EEE1;
+  --bait-bg-alt:            #EFE7D8;
+  --bait-surface:           #ffffff;
+  --bait-surface-hover:     #FDFBF7;
+  --bait-surface-elevated:  #ffffff;
+  --bait-glass:             rgba(255, 255, 255, 0.85);
+  --bait-glass-border:      rgba(255, 255, 255, 0.60);
+  --bait-green:             #D4AF37;
+  --bait-green-bright:      #FFD700;
+  --bait-green-light:       rgba(212, 175, 55, 0.10);
+  --bait-green-dark:        #1F3D2B;
+  --bait-gold:              #C8A86A;
+  --bait-gold-light:        rgba(200, 168, 106, 0.10);
+  --bait-text:              #1F3D2B;
+  --bait-text-secondary:    rgba(31, 61, 43, 0.60);
+  --bait-text-muted:        rgba(31, 61, 43, 0.40);
+  --bait-text-inverse:      #ffffff;
+  --bait-border:            rgba(31, 61, 43, 0.08);
+  --bait-border-strong:     rgba(31, 61, 43, 0.15);
+  --bait-shadow:            0 1px 3px rgba(0, 0, 0, 0.04);
+  --bait-shadow-lg:         0 8px 24px rgba(0, 0, 0, 0.06);
+  --bait-input-bg:          #ffffff;
+  --bait-header-bg:         rgba(245, 238, 225, 0.85);
+  --bait-skeleton:          #E6DCC8;
+  --bait-badge-bg:          rgba(212, 175, 55, 0.10);
+  --bait-overlay:           rgba(0, 0, 0, 0.45);
+
+  /* ── Viewport & Safe Area ── */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+  --nav-h:       56px;   /* ارتفاع TopNav */
+  --bar-h:       40px;   /* ارتفاع شريط الصفحة */
+  --content-h:   calc(100dvh - var(--nav-h));
+  --content-h-bar: calc(100dvh - var(--nav-h) - var(--bar-h));
+}
+
+.dark {
+  --background: #0B1120;
+  --foreground: #F0F0F5;
+  --card: rgba(255, 255, 255, 0.06);
+  --card-foreground: #F0F0F5;
+  --popover: rgba(15, 23, 42, 0.95);
+  --popover-foreground: #F0F0F5;
+  --primary: #D4AF37;
+  --primary-foreground: #0B1120;
+  --secondary: rgba(59, 91, 254, 0.15);
+  --secondary-foreground: #F0F0F5;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: rgba(240, 240, 245, 0.50);
+  --accent: rgba(59, 91, 254, 0.12);
+  --accent-foreground: #F0F0F5;
+  --destructive: #FF6B6B;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: transparent;
+  --input-background: rgba(15, 23, 42, 0.80);
+  --switch-background: #1E293B;
+  --ring: rgba(212, 175, 55, 0.40);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: #0F172A;
+  --sidebar-foreground: #F0F0F5;
+  --sidebar-primary: #D4AF37;
+  --sidebar-primary-foreground: #0B1120;
+  --sidebar-accent: #1E293B;
+  --sidebar-accent-foreground: #F0F0F5;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-ring: rgba(212, 175, 55, 0.30);
+
+  /* ═══════════════════════════════════════════════════
+     بيت الريف — الوضع الداكن الكحلي العميق
+     Deep Navy Frosted Glass Dark Mode
+     Gold #D4AF37 + Royal Blue #3B5BFE on Navy #0B1120
+     ═══════════════════════════════════════════════════ */
+  --bait-bg:                #0B1120;
+  --bait-bg-alt:            #0F172A;
+  --bait-surface:           rgba(255, 255, 255, 0.05);
+  --bait-surface-hover:     rgba(255, 255, 255, 0.09);
+  --bait-surface-elevated:  rgba(255, 255, 255, 0.11);
+  --bait-glass:             rgba(15, 23, 42, 0.65);
+  --bait-glass-border:      rgba(255, 255, 255, 0.10);
+  --bait-green:             #3B5BFE;
+  --bait-green-bright:      #5B7AFF;
+  --bait-green-light:       rgba(59, 91, 254, 0.15);
+  --bait-green-dark:        #0B1120;
+  --bait-gold:              #D4AF37;
+  --bait-gold-light:        rgba(212, 175, 55, 0.15);
+  --bait-text:              #F0F0F5;
+  --bait-text-secondary:    rgba(240, 240, 245, 0.68);
+  --bait-text-muted:        rgba(240, 240, 245, 0.40);
+  --bait-text-inverse:      #0B1120;
+  --bait-border:            rgba(255, 255, 255, 0.06);
+  --bait-border-strong:     rgba(255, 255, 255, 0.12);
+  --bait-shadow:            0 1px 3px rgba(0, 0, 0, 0.50);
+  --bait-shadow-lg:         0 8px 24px rgba(0, 0, 0, 0.60);
+  --bait-input-bg:          rgba(15, 23, 42, 0.80);
+  --bait-header-bg:         rgba(11, 17, 32, 0.92);
+  --bait-skeleton:          #1E293B;
+  --bait-badge-bg:          rgba(212, 175, 55, 0.15);
+  --bait-overlay:           rgba(0, 0, 0, 0.80);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    @apply bg-background text-foreground;
+    /* منع التمرير الأفقي على الشاشات الصغيرة */
+    overflow-x: hidden;
+    /* تجنب القفز عند ظهور/إخفاء keyboard على الموبايل */
+    overscroll-behavior: none;
+  }
+
+  /* تحسين اللمس على الأجهزة المحمولة */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* تحسين الـ scrollbar على الشاشات الكبيرة */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 99px; }
+  .dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* ==========================================
+   Language-aware text alignment
+   Layout is ALWAYS RTL — only text changes
+   ========================================== */
+html[data-text-dir="ltr"] {
+  --bait-text-align: left;
+  --bait-font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+html[data-text-dir="rtl"] {
+  --bait-text-align: right;
+  --bait-font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+}
+
+/* Auto text alignment for common text elements when English */
+html[lang="en"] p,
+html[lang="en"] h1,
+html[lang="en"] h2,
+html[lang="en"] h3,
+html[lang="en"] h4,
+html[lang="en"] h5,
+html[lang="en"] h6,
+html[lang="en"] label,
+html[lang="en"] span:not(.no-auto-align),
+html[lang="en"] input::placeholder,
+html[lang="en"] textarea::placeholder {
+  text-align: left;
+}
+
+html[lang="en"] input,
+html[lang="en"] textarea {
+  text-align: left;
+}
+
+/* Force text-center to still work */
+html[lang="en"] .text-center,
+html[lang="en"] [class*="text-center"] {
+  text-align: center !important;
+}
+
+/* ==========================================
+   SECURITY: Anti-download & screenshot protection
+   ========================================== */
+
+/* Disable text selection globally (except inputs) */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  /* Prevent iOS callout on long-press */
+  touch-action: manipulation;
+}
+
+/* Re-enable selection for inputs/textareas */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* Prevent images from being saved via long-press */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* Re-enable pointer events for clickable images */
+img.clickable,
+button img,
+a img,
+.allow-zoom img {
+  pointer-events: auto;
+}
+
+/* Disable zoom via touch-action globally */
+html {
+  touch-action: manipulation;
+}
+
+/* Allow zoom ONLY inside image viewer */
+.allow-zoom {
+  touch-action: auto !important;
+}
+
+/* Hide scrollbar */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Print protection — blank page when printed */
+@media print {
+  body {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  html::after {
+    content: 'الطباعة غير مسموحة — Printing is not allowed';
+    display: block;
+    text-align: center;
+    padding: 50px;
+    font-size: 24px;
+    color: #999;
+  }
+}
+
+/* ==========================================
+   Map marker pulse animation
+   ========================================== */
+@keyframes bait-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.6); opacity: 0; }
+}

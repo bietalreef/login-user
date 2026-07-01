@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- الصفحات الرئيسية                              -->
+  <!-- ══════════════════════════════════════════════ -->
+
+  <url>
+    <loc>https://app.bietalreef.ae/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.bietalreef.ae/"/>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/home</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/sitemap</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- صفحات الخدمات                                 -->
+  <!-- ══════════════════════════════════════════════ -->
+
+  <url>
+    <loc>https://app.bietalreef.ae/contractors-in-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/interior-design-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/marble-suppliers-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/electrical-contractors-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/villa-renovation-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/building-materials-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/maintenance-services-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/craftsmen-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/cleaning-services-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/equipment-rental-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/furniture-decor-uae</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- صفحات الخريطة — المدن                         -->
+  <!-- ══════════════════════════════════════════════ -->
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/abu-dhabi</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/sharjah</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/ajman</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/ras-al-khaimah</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/umm-al-quwain</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/fujairah</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/al-ain</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- صفحات الخريطة — خدمة × مدينة (أهم الصفحات)   -->
+  <!-- ══════════════════════════════════════════════ -->
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai/construction-contracting</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai/engineering-consultation</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai/maintenance-companies</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai/craftsmen</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai/building-materials</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai/cleaning-services</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai/equipment-rental</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/abu-dhabi/construction-contracting</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/abu-dhabi/maintenance-companies</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/sharjah/construction-contracting</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/map/sharjah/maintenance-companies</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- صفحات ميزات المنصة                            -->
+  <!-- ══════════════════════════════════════════════ -->
+
+  <url>
+    <loc>https://app.bietalreef.ae/seo/marketplace</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/seo/store</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/seo/dashboards</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/seo/platform</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/seo/tools</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- الصفحات القانونية والمعلوماتية                 -->
+  <!-- ══════════════════════════════════════════════ -->
+
+  <url>
+    <loc>https://app.bietalreef.ae/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://app.bietalreef.ae/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>

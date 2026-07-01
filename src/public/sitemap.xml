@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!--
+  ══════════════════════════════════════════════════════════
+  sitemap.xml — بيت الريف | Beit Al Reef
+  https://app.bietalreef.ae/sitemap.xml
+  آخر تحديث: 2026-03-26
+  ══════════════════════════════════════════════════════════
+  هذا الملف يحتوي فقط الصفحات العامة (Public SEO Pages)
+  صفحات التطبيق الداخلية (noindex) ليست مدرجة هنا
+  ══════════════════════════════════════════════════════════
+  -->
+
+  <!-- ══════════════════════
+       الصفحة الرئيسية
+       ══════════════════════ -->
+  <url>
+    <loc>https://app.bietalreef.ae/</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/"/>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/og-home.png</image:loc>
+      <image:title>بيت الريف — منصة البناء والتشطيب الذكية في الإمارات</image:title>
+      <image:caption>UAE Smart Construction Platform — Beit Al Reef</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ══════════════════════
+       صفحات ميزات المنصة
+       ══════════════════════ -->
+  <url>
+    <loc>https://app.bietalreef.ae/seo/platform</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/platform-overview.png</image:loc>
+      <image:title>منظومة بيت الريف المتكاملة لقطاع البناء في الإمارات</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/seo/marketplace</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.92</priority>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/marketplace-seo.png</image:loc>
+      <image:title>سوق المقاولات والخدمات في الإمارات — بيت الريف</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/seo/store</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/store-seo.png</image:loc>
+      <image:title>متجر مواد البناء والتشطيب — بيت الريف</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/seo/dashboards</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/dashboards-seo.png</image:loc>
+      <image:title>لوحات التحكم الاحترافية للمزودين — بيت الريف</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/seo/tools</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/tools-seo.png</image:loc>
+      <image:title>أدوات الذكاء الاصطناعي وإدارة المشاريع — بيت الريف</image:title>
+    </image:image>
+  </url>
+
+  <!-- ══════════════════════
+       صفحات الخدمات SEO
+       ══════════════════════ -->
+  <url>
+    <loc>https://app.bietalreef.ae/contractors-in-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/contractors-in-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/contractors-in-uae"/>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/contractors-uae.png</image:loc>
+      <image:title>شركات المقاولات في الإمارات — بيت الريف</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/interior-design-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/interior-design-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/interior-design-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/marble-suppliers-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/marble-suppliers-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/marble-suppliers-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/electrical-contractors-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/electrical-contractors-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/electrical-contractors-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/villa-renovation-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/villa-renovation-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/villa-renovation-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/building-materials-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/building-materials-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/building-materials-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/maintenance-services-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/maintenance-services-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/maintenance-services-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/craftsmen-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/craftsmen-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/craftsmen-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/cleaning-services-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/cleaning-services-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/cleaning-services-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/equipment-rental-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/equipment-rental-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/equipment-rental-uae"/>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/furniture-decor-uae</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.bietalreef.ae/furniture-decor-uae"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.bietalreef.ae/furniture-decor-uae"/>
+  </url>
+
+  <!-- ══════════════════════
+       خرائط المدن والإمارات
+       ══════════════════════ -->
+  <url>
+    <loc>https://app.bietalreef.ae/map/dubai</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.92</priority>
+    <image:image>
+      <image:loc>https://app.bietalreef.ae/assets/dubai-map.png</image:loc>
+      <image:title>خريطة المقاولين والمزودين في دبي — بيت الريف</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/map/abu-dhabi</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.92</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/map/sharjah</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/map/ajman</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/map/al-ain</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/map/ras-al-khaimah</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.82</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/map/umm-al-quwain</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/map/fujairah</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.78</priority>
+  </url>
+
+  <!-- خريطة × خدمة × مدينة (GEO تفصيلي) -->
+  <url><loc>https://app.bietalreef.ae/map/dubai/contractors-in-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.82</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/interior-design-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.82</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/building-materials-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.82</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/maintenance-services-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/marble-suppliers-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/villa-renovation-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/craftsmen-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/cleaning-services-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/equipment-rental-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/dubai/furniture-decor-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/abu-dhabi/contractors-in-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.82</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/abu-dhabi/interior-design-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/abu-dhabi/building-materials-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/abu-dhabi/maintenance-services-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/sharjah/contractors-in-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/sharjah/building-materials-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/sharjah/maintenance-services-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/ajman/contractors-in-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/ras-al-khaimah/contractors-in-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/fujairah/contractors-in-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://app.bietalreef.ae/map/al-ain/contractors-in-uae</loc><lastmod>2026-03-26</lastmod><changefreq>weekly</changefreq><priority>0.72</priority></url>
+
+  <!-- ══════════════════════
+       صفحات المزودين (SEO)
+       ══════════════════════ -->
+  <!-- سيتم توليدها ديناميكياً من /provider/:slug -->
+
+  <!-- ══════════════════════
+       صفحات قانونية وعامة
+       ══════════════════════ -->
+  <url>
+    <loc>https://app.bietalreef.ae/about</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/privacy</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/terms</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/sitemap</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/press</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://app.bietalreef.ae/webp</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+
+</urlset>

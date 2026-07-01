@@ -1,0 +1,26 @@
+{
+  "short_name": "مزودي بيت الريف",
+  "name": "بوابة مزودي خدمات بيت الريف",
+  "description": "استقبل المناقصات، أنشئ عروض السعر، تابع المستندات، وادخل لحسابك بسرعة",
+  "icons": [
+    {
+      "src": "pwa-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "pwa-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "theme_color": "#1F3D2B",
+  "background_color": "#F5EEE1",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar"
+}

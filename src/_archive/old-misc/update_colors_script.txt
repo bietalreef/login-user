@@ -1,0 +1,2 @@
+// @archived - سكريبت تحديث ألوان قديم
+// Original path: /update_colors_script.txt

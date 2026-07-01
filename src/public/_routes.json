@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/robots.txt",
+    "/sitemap.xml",
+    "/manifest.json",
+    "/service-worker.js",
+    "/google72137e288e2b5848.html",
+    "/icon-placeholder.svg",
+    "/icons/*",
+    "/assets/*",
+    "/fonts/*",
+    "/images/*"
+  ]
+}

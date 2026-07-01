@@ -1,0 +1,40 @@
+User-agent: *
+Allow: /
+
+# Public SEO pages
+Allow: /home
+Allow: /contractors-in-uae
+Allow: /interior-design-uae
+Allow: /marble-suppliers-uae
+Allow: /electrical-contractors-uae
+Allow: /villa-renovation-uae
+Allow: /building-materials-uae
+Allow: /maintenance-services-uae
+Allow: /craftsmen-uae
+Allow: /cleaning-services-uae
+Allow: /equipment-rental-uae
+Allow: /furniture-decor-uae
+Allow: /map/
+Allow: /seo/
+Allow: /sitemap
+Allow: /privacy
+Allow: /terms
+Allow: /about
+
+# Block private app routes from crawlers
+Disallow: /agents
+Disallow: /dashboard
+Disallow: /home-old
+Disallow: /wayak-computer
+Disallow: /connectors
+Disallow: /notifications
+Disallow: /settings
+Disallow: /profile
+Disallow: /projects
+Disallow: /requests
+Disallow: /store
+Disallow: /marketplace
+Disallow: /admin/
+Disallow: /oauth/
+
+Sitemap: https://app.bietalreef.ae/sitemap.xml

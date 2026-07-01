@@ -1,0 +1,563 @@
+
+{
+  "name": "BietAlReef - Social Publishing Hub",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        470
+      ]
+    },
+    {
+      "parameters": {
+        "path": "social/publish/immediate",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "name": "Webhook: Immediate Publish",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        40,
+        200
+      ],
+      "webhookId": "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "minutes": 5
+            }
+          ]
+        }
+      },
+      "name": "Cron: Check Scheduled Posts",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        40,
+        470
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "hours": 1
+        }
+      },
+      "name": "Cron: Fetch Engagement (24h)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        40,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT * FROM social_posts WHERE id = '{{ $json.body.post_id }}' LIMIT 1;",
+        "options": {}
+      },
+      "name": "Get Post from Webhook",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        280,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT * FROM social_posts WHERE status = 'scheduled' AND scheduled_at <= NOW();",
+        "options": {}
+      },
+      "name": "Get Scheduled Posts",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        280,
+        470
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1
+      },
+      "name": "Loop Over Posts",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        500,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE social_posts SET status = 'publishing' WHERE id = '{{ $json.id }}' RETURNING *;",
+        "options": {}
+      },
+      "name": "Set Post to 'Publishing'",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        340
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT t.*, a.platform, a.access_token FROM social_post_targets t JOIN social_accounts a ON t.account_id = a.id WHERE t.post_id = '{{ $json.id }}';",
+        "options": {}
+      },
+      "name": "Get Post Targets & Tokens",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        340
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1
+      },
+      "name": "Loop Over Targets",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "value1": "{{$json.platform}}",
+              "operation": "equal",
+              "value2": "twitter"
+            },
+            {
+              "value1": "{{$json.platform}}",
+              "operation": "equal",
+              "value2": "linkedin"
+            }
+          ]
+        }
+      },
+      "name": "Route by Platform",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twitter.com/2/tweets",
+        "authentication": "oauth2",
+        "options": {}
+      },
+      "name": "POST to Twitter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1620,
+        260
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Twitter API Placeholder"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "authentication": "oauth2",
+        "options": {}
+      },
+      "name": "POST to LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1620,
+        420
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "LinkedIn API Placeholder"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE social_post_targets SET status = 'published', platform_post_id = '{{ $json.data.id }}', published_at = NOW() WHERE id = {{ $('Loop Over Targets').item.json.id }};",
+        "options": {}
+      },
+      "name": "Update Target: Success",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        340
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE social_post_targets SET status = 'failed', error_message = '{{ $json.message }}' WHERE id = {{ $('Loop Over Targets').item.json.id }};",
+        "options": {}
+      },
+      "name": "Update Target: Failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1620,
+        580
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=WITH results AS (SELECT status FROM social_post_targets WHERE post_id = '{{ $('Set Post to \'Publishing\'').first().json.id }}') SELECT CASE WHEN (SELECT COUNT(*) FROM results WHERE status = 'failed') > 0 THEN 'failed' ELSE 'published' END as final_status;",
+        "options": {}
+      },
+      "name": "Check Final Post Status",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        2060,
+        340
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE social_posts SET status = '{{ $json.final_status }}', published_at = NOW() WHERE id = '{{ $('Set Post to \'Publishing\'').first().json.id }}';",
+        "options": {}
+      },
+      "name": "Update Final Post Status",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        2280,
+        340
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT * FROM social_post_targets WHERE status = 'published' AND published_at < NOW() - INTERVAL '23 hours' AND engagement IS NULL;",
+        "options": {}
+      },
+      "name": "Get Posts for Engagement Fetch",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        280,
+        740
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.twitter.com/2/tweets?ids={{$json.platform_post_id}}&tweet.fields=public_metrics",
+        "options": {}
+      },
+      "name": "Fetch Engagement from API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        500,
+        740
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Twitter API Placeholder"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE social_post_targets SET engagement = '{{ $json.data[0].public_metrics }}' WHERE id = {{ $('Get Posts for Engagement Fetch').item.json.id }};",
+        "options": {}
+      },
+      "name": "Update Engagement Stats",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        740
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "PLACEHOLDER_CREDENTIALS_ID",
+          "name": "Supabase BietAlReef"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook: Immediate Publish": {
+      "main": [
+        [
+          {
+            "node": "Get Post from Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron: Check Scheduled Posts": {
+      "main": [
+        [
+          {
+            "node": "Get Scheduled Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Post from Webhook": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Scheduled Posts": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Posts": {
+      "main": [
+        [
+          {
+            "node": "Set Post to 'Publishing'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Post to 'Publishing'": {
+      "main": [
+        [
+          {
+            "node": "Get Post Targets & Tokens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Post Targets & Tokens": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Targets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Targets": {
+      "main": [
+        [
+          {
+            "node": "Route by Platform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Platform": {
+      "main": [
+        [
+          {
+            "node": "POST to Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "POST to LinkedIn",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "POST to Twitter": {
+      "main": [
+        [
+          {
+            "node": "Update Target: Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Update Target: Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Target: Success": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Targets": {
+      "onFinish": [
+        {
+          "node": "Check Final Post Status",
+          "type": "onFinish",
+          "index": 0
+        }
+      ]
+    },
+    "Check Final Post Status": {
+      "main": [
+        [
+          {
+            "node": "Update Final Post Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron: Fetch Engagement (24h)": {
+      "main": [
+        [
+          {
+            "node": "Get Posts for Engagement Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Posts for Engagement Fetch": {
+      "main": [
+        [
+          {
+            "node": "Fetch Engagement from API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Engagement from API": {
+      "main": [
+        [
+          {
+            "node": "Update Engagement Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": "SocialPublishingHub"
+}
